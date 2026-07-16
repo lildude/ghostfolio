@@ -371,18 +371,30 @@ export class DataProviderService implements OnModuleInit {
       return response;
     }
 
+    const isSQLite = this.prismaService.databaseProvider === 'sqlite';
     const granularityQuery =
       aGranularity === 'month'
-        ? Prisma.sql`AND (date_part('day', date) = 1 OR date >= TIMESTAMP 'yesterday')`
+        ? isSQLite
+          ? Prisma.sql`AND (strftime('%d', "date") = '01' OR datetime("date") >= datetime('now', 'start of day', '-1 day'))`
+          : Prisma.sql`AND (date_part('day', date) = 1 OR date >= TIMESTAMP 'yesterday')`
         : Prisma.empty;
 
     const rangeQuery =
       from && to
-        ? Prisma.sql`AND date >= ${format(from, DATE_FORMAT)}::timestamp AND date <= ${format(
-            to,
-            DATE_FORMAT
-          )}::timestamp`
+        ? isSQLite
+          ? Prisma.sql`AND datetime("date") >= datetime(${format(
+              from,
+              DATE_FORMAT
+            )}) AND datetime("date") <= datetime(${format(to, DATE_FORMAT)})`
+          : Prisma.sql`AND date >= ${format(from, DATE_FORMAT)}::timestamp AND date <= ${format(
+              to,
+              DATE_FORMAT
+            )}::timestamp`
         : Prisma.empty;
+
+    const dataSourceColumn = isSQLite
+      ? Prisma.sql`"dataSource"`
+      : Prisma.sql`"dataSource"::text`;
 
     const dataSources = aItems.map(({ dataSource }) => {
       return dataSource;
@@ -397,7 +409,7 @@ export class DataProviderService implements OnModuleInit {
         .$queryRaw`
           SELECT *
           FROM "MarketData"
-          WHERE "dataSource"::text IN (${Prisma.join(dataSources)})
+          WHERE ${dataSourceColumn} IN (${Prisma.join(dataSources)})
             AND "symbol" IN (${Prisma.join(symbols)})
             ${granularityQuery}
             ${rangeQuery}

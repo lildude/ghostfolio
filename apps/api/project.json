@@ -10,6 +10,7 @@
       "configurations": {
         "production": {}
       },
+      "inputs": ["production", "^production", "{workspaceRoot}/prisma/**/*"],
       "outputs": ["{workspaceRoot}/dist/apps/api"]
     },
     "copy-assets": {
@@ -46,6 +47,13 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/.env.example",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/prisma/**/*"
+      ],
       "options": {
         "jestConfig": "apps/api/jest.config.ts"
       },
