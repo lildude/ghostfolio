@@ -20,6 +20,7 @@
       "@ghostfolio/api/*": ["apps/api/src/*"],
       "@ghostfolio/client/*": ["apps/client/src/app/*"],
       "@ghostfolio/common/*": ["libs/common/src/lib/*"],
+      "@ghostfolio/prisma/*": ["prisma/*"],
       "@ghostfolio/ui/*": ["libs/ui/src/lib/*"]
     },
     "noFallthroughCasesInSwitch": true,

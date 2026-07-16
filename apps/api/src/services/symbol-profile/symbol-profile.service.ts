@@ -26,7 +26,12 @@ export class SymbolProfileService {
   public async add(
     assetProfile: Prisma.SymbolProfileCreateInput
   ): Promise<SymbolProfile | never> {
-    return this.prismaService.symbolProfile.create({ data: assetProfile });
+    return this.prismaService.symbolProfile.create({
+      data: {
+        ...assetProfile,
+        holdings: assetProfile.holdings ?? []
+      }
+    });
   }
 
   public async delete({ dataSource, symbol }: AssetProfileIdentifier) {
@@ -84,11 +89,18 @@ export class SymbolProfileService {
       return data;
     }
 
+    const assetProfileOverrides =
+      data as Prisma.AssetProfileOverridesCreateWithoutSymbolProfileInput;
+
     return {
       assetProfileOverrides: {
         upsert: {
-          create:
-            data as Prisma.AssetProfileOverridesCreateWithoutSymbolProfileInput,
+          create: {
+            ...assetProfileOverrides,
+            countries: assetProfileOverrides.countries ?? [],
+            holdings: assetProfileOverrides.holdings ?? [],
+            sectors: assetProfileOverrides.sectors ?? []
+          },
           update:
             data as Prisma.AssetProfileOverridesUpdateWithoutSymbolProfileInput
         }

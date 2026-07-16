@@ -1,17 +1,35 @@
 import { defineConfig } from '@prisma/config';
-import { config } from 'dotenv';
-import { expand } from 'dotenv-expand';
 import { join } from 'node:path';
 
-expand(config({ quiet: true }));
+import database from '../prisma/database.js';
+
+database.loadEnvironment();
+
+const databaseConfiguration = database.getDatabaseConfiguration(process.env, {
+  useDirectUrl: true
+});
 
 export default defineConfig({
   datasource: {
-    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL
+    url: databaseConfiguration.url
   },
   migrations: {
-    path: join(__dirname, '..', 'prisma', 'migrations'),
+    path: join(
+      __dirname,
+      '..',
+      'prisma',
+      databaseConfiguration.provider === 'sqlite'
+        ? 'migrations-sqlite'
+        : 'migrations'
+    ),
     seed: `node ${join(__dirname, '..', 'prisma', 'seed.mts')}`
   },
-  schema: join(__dirname, '..', 'prisma', 'schema.prisma')
+  schema: join(
+    __dirname,
+    '..',
+    'prisma',
+    databaseConfiguration.provider === 'sqlite'
+      ? 'schema.sqlite.prisma'
+      : 'schema.prisma'
+  )
 });

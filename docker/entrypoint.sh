@@ -3,7 +3,7 @@
 set -ex
 
 echo "Running database migrations"
-npx prisma migrate deploy
+npm run database:migrate
 
 echo "Seeding the database"
 npx prisma db seed

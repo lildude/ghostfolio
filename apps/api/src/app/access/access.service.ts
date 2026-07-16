@@ -3,7 +3,7 @@ import { AccessSettings, Filter } from '@ghostfolio/common/interfaces';
 import { AccessWithGranteeUser } from '@ghostfolio/common/types';
 
 import { Injectable } from '@nestjs/common';
-import { Access, Prisma } from '@prisma/client';
+import { Access, AccessPermission, Prisma } from '@prisma/client';
 
 @Injectable()
 export class AccessService {
@@ -48,7 +48,11 @@ export class AccessService {
 
   public async createAccess(data: Prisma.AccessCreateInput): Promise<Access> {
     return this.prismaService.access.create({
-      data
+      data: {
+        ...data,
+        permissions: data.permissions ?? [AccessPermission.READ_RESTRICTED],
+        settings: data.settings ?? {}
+      }
     });
   }
 

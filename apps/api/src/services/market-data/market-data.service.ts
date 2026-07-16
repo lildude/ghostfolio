@@ -161,8 +161,12 @@ export class MarketDataService {
         if (data.length > 0) {
           let minTime = Infinity;
           let maxTime = -Infinity;
+          const marketDataByTime = new Map<
+            number,
+            Prisma.MarketDataCreateManyInput
+          >();
 
-          for (const { date } of data) {
+          for (const { date, marketPrice, state } of data) {
             const time = (date as Date).getTime();
 
             if (time < minTime) {
@@ -171,6 +175,16 @@ export class MarketDataService {
 
             if (time > maxTime) {
               maxTime = time;
+            }
+
+            if (!marketDataByTime.has(time)) {
+              marketDataByTime.set(time, {
+                dataSource,
+                symbol,
+                date: date as Date,
+                marketPrice: marketPrice as number,
+                state: state as MarketDataState
+              });
             }
           }
 
@@ -189,14 +203,7 @@ export class MarketDataService {
           });
 
           await prisma.marketData.createMany({
-            data: data.map(({ date, marketPrice, state }) => ({
-              dataSource,
-              symbol,
-              date: date as Date,
-              marketPrice: marketPrice as number,
-              state: state as MarketDataState
-            })),
-            skipDuplicates: true
+            data: [...marketDataByTime.values()]
           });
         }
       },

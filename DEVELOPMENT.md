@@ -18,6 +18,8 @@
 1. Open https://localhost:4200/en in your browser
 1. Create a new user via _Get Started_ (this first user will get the role `ADMIN`)
 
+To use SQLite instead, remove `DATABASE_URL` and all `POSTGRES_*` variables from `.env`, start only the `redis` service, and continue with `npm run database:setup`. The database is created at `db/portfolio.db`.
+
 ### Start Server
 
 #### Debug

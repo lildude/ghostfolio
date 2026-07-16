@@ -67,7 +67,7 @@ Ghostfolio is a modern web application written in [TypeScript](https://www.types
 
 ### Backend
 
-The backend is based on [NestJS](https://nestjs.com) using [PostgreSQL](https://www.postgresql.org) as a database together with [Prisma](https://www.prisma.io) and [Redis](https://redis.io) for caching.
+The backend is based on [NestJS](https://nestjs.com) using [PostgreSQL](https://www.postgresql.org) or [SQLite](https://www.sqlite.org) as a database together with [Prisma](https://www.prisma.io) and [Redis](https://redis.io) for caching.
 
 ### Frontend
 
@@ -85,28 +85,36 @@ We provide official container images hosted on [Docker Hub](https://hub.docker.c
 
 ### Supported Environment Variables
 
-| Name                        | Type                  | Default Value         | Description                                                                                                                                                                                                                   |
-| --------------------------- | --------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ACCESS_TOKEN_SALT`         | `string`              |                       | A random string used as salt for access tokens                                                                                                                                                                                |
-| `API_KEY_COINGECKO_DEMO`    | `string` (optional)   |                       | The _CoinGecko_ Demo API key                                                                                                                                                                                                  |
-| `API_KEY_COINGECKO_PRO`     | `string` (optional)   |                       | The _CoinGecko_ Pro API key                                                                                                                                                                                                   |
-| `DATABASE_URL`              | `string`              |                       | The database connection URL. If using a connection pooler, use the pooled connection URL here. e.g. `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}`                                        |
-| `DIRECT_URL`                | `string` (optional)   |                       | The direct database connection URL used by the _Prisma CLI_ (e.g. for schema migrations) and seeding, bypassing any connection poolers (falls back to `DATABASE_URL`)                                                         |
-| `ENABLE_FEATURE_AUTH_TOKEN` | `boolean` (optional)  | `true`                | Enables authentication via security token                                                                                                                                                                                     |
-| `HOST`                      | `string` (optional)   | `0.0.0.0`             | The host where the Ghostfolio application will run on                                                                                                                                                                         |
-| `JWT_SECRET_KEY`            | `string`              |                       | A random string used for _JSON Web Tokens_ (JWT)                                                                                                                                                                              |
-| `LOG_LEVELS`                | `string[]` (optional) |                       | The logging levels for the Ghostfolio application, e.g. `["debug","error","log","warn"]`                                                                                                                                      |
-| `PORT`                      | `number` (optional)   | `3333`                | The port where the Ghostfolio application will run on                                                                                                                                                                         |
-| `POSTGRES_DB`               | `string`              |                       | The name of the _PostgreSQL_ database                                                                                                                                                                                         |
-| `POSTGRES_PASSWORD`         | `string`              |                       | The password of the _PostgreSQL_ database                                                                                                                                                                                     |
-| `POSTGRES_USER`             | `string`              |                       | The user of the _PostgreSQL_ database                                                                                                                                                                                         |
-| `REDIS_DB`                  | `number` (optional)   | `0`                   | The database index of _Redis_                                                                                                                                                                                                 |
-| `REDIS_HOST`                | `string`              |                       | The host where _Redis_ is running                                                                                                                                                                                             |
-| `REDIS_PASSWORD`            | `string`              |                       | The password of _Redis_                                                                                                                                                                                                       |
-| `REDIS_PORT`                | `number`              |                       | The port where _Redis_ is running                                                                                                                                                                                             |
-| `REQUEST_TIMEOUT`           | `number` (optional)   | `2000`                | The timeout of network requests to data providers in milliseconds                                                                                                                                                             |
-| `ROOT_URL`                  | `string` (optional)   | `http://0.0.0.0:3333` | The root URL of the Ghostfolio application, used for generating callback URLs and external links.                                                                                                                             |
-| `TRUST_PROXY`               | `string` (optional)   |                       | The [trust proxy](https://expressjs.com/en/guide/behind-proxies.html) setting of _Express.js_ to determine the client IP address for rate limiting, e.g. `1` if the Ghostfolio application runs behind a single reverse proxy |
+| Name                        | Type                  | Default Value          | Description                                                                                                                                                                                                                    |
+| --------------------------- | --------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ACCESS_TOKEN_SALT`         | `string`              |                        | A random string used as salt for access tokens                                                                                                                                                                                 |
+| `API_KEY_COINGECKO_DEMO`    | `string` (optional)   |                        | The _CoinGecko_ Demo API key                                                                                                                                                                                                   |
+| `API_KEY_COINGECKO_PRO`     | `string` (optional)   |                        | The _CoinGecko_ Pro API key                                                                                                                                                                                                    |
+| `DATABASE_URL`              | `string` (optional)   | `file:db/portfolio.db` | The database connection URL. Supports SQLite (`file:path/to/database.db`) and PostgreSQL (`postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}`). If using a connection pooler, use its URL here. |
+| `DIRECT_URL`                | `string` (optional)   |                        | The direct database connection URL used by the _Prisma CLI_ (e.g. for schema migrations) and seeding, bypassing any connection poolers (falls back to `DATABASE_URL`)                                                          |
+| `ENABLE_FEATURE_AUTH_TOKEN` | `boolean` (optional)  | `true`                 | Enables authentication via security token                                                                                                                                                                                      |
+| `HOST`                      | `string` (optional)   | `0.0.0.0`              | The host where the Ghostfolio application will run on                                                                                                                                                                          |
+| `JWT_SECRET_KEY`            | `string`              |                        | A random string used for _JSON Web Tokens_ (JWT)                                                                                                                                                                               |
+| `LOG_LEVELS`                | `string[]` (optional) |                        | The logging levels for the Ghostfolio application, e.g. `["debug","error","log","warn"]`                                                                                                                                       |
+| `PORT`                      | `number` (optional)   | `3333`                 | The port where the Ghostfolio application will run on                                                                                                                                                                          |
+| `POSTGRES_DB`               | `string` (optional)   |                        | The name of the _PostgreSQL_ database                                                                                                                                                                                          |
+| `POSTGRES_PASSWORD`         | `string` (optional)   |                        | The password of the _PostgreSQL_ database                                                                                                                                                                                      |
+| `POSTGRES_USER`             | `string` (optional)   |                        | The user of the _PostgreSQL_ database                                                                                                                                                                                          |
+| `REDIS_DB`                  | `number` (optional)   | `0`                    | The database index of _Redis_                                                                                                                                                                                                  |
+| `REDIS_HOST`                | `string`              |                        | The host where _Redis_ is running                                                                                                                                                                                              |
+| `REDIS_PASSWORD`            | `string`              |                        | The password of _Redis_                                                                                                                                                                                                        |
+| `REDIS_PORT`                | `number`              |                        | The port where _Redis_ is running                                                                                                                                                                                              |
+| `REQUEST_TIMEOUT`           | `number` (optional)   | `2000`                 | The timeout of network requests to data providers in milliseconds                                                                                                                                                              |
+| `ROOT_URL`                  | `string` (optional)   | `http://0.0.0.0:3333`  | The root URL of the Ghostfolio application, used for generating callback URLs and external links.                                                                                                                              |
+| `TRUST_PROXY`               | `string` (optional)   |                        | The [trust proxy](https://expressjs.com/en/guide/behind-proxies.html) setting of _Express.js_ to determine the client IP address for rate limiting, e.g. `1` if the Ghostfolio application runs behind a single reverse proxy  |
+
+#### Database
+
+Ghostfolio uses SQLite when all `POSTGRES_*` environment variables are unset. If `DATABASE_URL` is also unset, the database is created at `db/portfolio.db`. Set `DATABASE_URL` to a `file:` URL to use a different SQLite file. Relative paths are resolved from the application's working directory.
+
+To use PostgreSQL, set `DATABASE_URL` to a `postgresql:` URL. The `POSTGRES_*` variables are used by the provided PostgreSQL Docker Compose configuration; they must all be unset when using SQLite.
+
+When running the container with SQLite, persist `/ghostfolio/apps/api/db` as a volume.
 
 #### OpenID Connect OIDC (experimental)
 
@@ -133,11 +141,19 @@ We provide official container images hosted on [Docker Hub](https://hub.docker.c
 
 #### a. Run environment
 
-Run the following command to start the Docker images from [Docker Hub](https://hub.docker.com/r/ghostfolio/ghostfolio):
+Run the following command to start Ghostfolio with PostgreSQL from [Docker Hub](https://hub.docker.com/r/ghostfolio/ghostfolio):
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
 ```
+
+To use SQLite instead, remove `DATABASE_URL` and all `POSTGRES_*` variables from `.env`, then run:
+
+```bash
+docker compose -f docker/docker-compose.sqlite.yml up -d
+```
+
+The `sqlite` volume persists the database at `db/portfolio.db` inside the Ghostfolio container.
 
 #### b. Build and run environment
 

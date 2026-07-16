@@ -158,7 +158,7 @@ export class DataGatheringService {
             figi,
             figiComposite,
             figiShareClass,
-            holdings,
+            holdings: holdings ?? [],
             isin,
             name,
             sectors,
